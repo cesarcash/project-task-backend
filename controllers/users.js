@@ -6,6 +6,10 @@ const AuthError = require('../middleware/errors/AuthError');
 const NotFoundError = require('../middleware/errors/NotFoundError');
 const BadRequestError = require('../middleware/errors/BadRequestError');
 
+require('dotenv').config();
+
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 const getUser = async (req, res, next) => {
 
   try {
