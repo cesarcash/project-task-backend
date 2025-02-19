@@ -11,8 +11,8 @@ const { requestLogger, errorLogger } = require('./middleware/logger');
 const { HttpResponseMessage } = require('./enums/http');
 
 const allowedCors = [
-  // 'https://cesarcash.chickenkiller.com',
-  // 'http://cesarcash.chickenkiller.com',
+  'https://apptask.twilightparadox.com',
+  'http://apptask.twilightparadox.com',
   'http://localhost:3000',
 ];
 const DEFAULT_ALLOWED_METHODS = ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'];
