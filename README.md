@@ -36,6 +36,6 @@ El poryecto podrá escalar como un panel administrativo
 
 ### Enlaces
 
-- [API](https://api.apptask.twilightparadox.com)
-- [URL](https://apptask.twilightparadox.com)
-- [URL](http://www.apptask.twilightparadox.com)
+- [https://api.apptask.twilightparadox.com](https://api.apptask.twilightparadox.com)
+- [https://apptask.twilightparadox.com](https://apptask.twilightparadox.com)
+- [https://www.apptask.twilightparadox.com](https://www.apptask.twilightparadox.com)
