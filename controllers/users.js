@@ -15,16 +15,35 @@ const getUser = async (req, res, next) => {
   try {
 
     if (!req.user) {
-      throw new AuthError(HttpResponseMessage.UNAUTHORIZED);
+      return next(new AuthError(HttpResponseMessage.UNAUTHORIZED));
     }
 
     const userId = req.user._id;
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select('-password');
     if (!user) {
-      throw new NotFoundError(HttpResponseMessage.NOT_FOUND);
+      return next(new NotFoundError(HttpResponseMessage.NOT_FOUND));
     }
 
-    res.status(HttpStatus.OK).send({name: user.name, email: user.email});
+    res.status(HttpStatus.OK).json({name: user.name, email: user.email, avatar: user.avatar, _id: user._id});
+
+  }catch(e){
+    next(e);
+  }
+
+}
+
+const getUserById = async (req, res, next) => {
+
+  const { userId } = req.params;
+
+  try{
+
+    const user = await User.findById(userId).select('-password');
+    if(!user){
+      return next(new NotFoundError(HttpResponseMessage.NOT_FOUND));
+    }
+
+    res.status(HttpStatus.OK).json({data: user});
 
   }catch(e){
     next(e);
@@ -38,17 +57,23 @@ const updateUser = async (req, res, next) => {
 
     const userId = req.user._id;
     const {name, email, password} = req.body;
-    if(!name || !email || !password){
-      throw new BadRequestError(HttpResponseMessage.BAD_REQUEST);
+    if(!name || !email){
+      return next(new BadRequestError(HttpResponseMessage.BAD_REQUEST));
     }
 
-    const hashedPAssword = await bcrypt.hash(password, 10);
+    const updateData = {name, email};
 
-    const updateUser = await User.findByIdAndUpdate(userId, {name, email, password: hashedPAssword}, {new: true}).orFail(() => {
-      throw new NotFoundError(HttpResponseMessage.NOT_FOUND);
-    });
+    if(password){
+      updateData.password = await bcrypt.hash(password, 10);
+    }
 
-    res.status(HttpStatus.OK).send({data: updateUser});
+    const updateUser = await User.findByIdAndUpdate(userId, updateData, {new: true})
+    .orFail(() => {
+      return next(new NotFoundError(HttpResponseMessage.NOT_FOUND));
+    })
+    .select('-password');
+
+    res.status(HttpStatus.OK).json({data: updateUser});
 
   }catch(e){
     next(e);
@@ -62,12 +87,12 @@ const createUser = async (req, res, next) => {
 
     const {name, email, password} = req.body;
     if(!name || !email || !password){
-      throw new BadRequestError(HttpResponseMessage.BAD_REQUEST);
+      return next(new BadRequestError(HttpResponseMessage.BAD_REQUEST));
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({name, email, password: hashedPassword});
-    res.status(HttpStatus.CREATED).send({data: {_id: user._id, name: user.name, email: user.email}});
+    res.status(HttpStatus.CREATED).json({data: {_id: user._id, name: user.name, email: user.email, avatar: user.avatar }});
 
   }catch(e){
     next(e);
@@ -81,21 +106,21 @@ const login = async (req, res, next) => {
 
     const {email, password} = req.body;
     if(!email || !password){
-      throw new BadRequestError(HttpResponseMessage.BAD_REQUEST);
+      return next(new BadRequestError(HttpResponseMessage.BAD_REQUEST));
     }
 
     const user = await User.findOne({email}).select('+password');
     if(!user){
-      throw new AuthError(HttpResponseMessage.UNAUTHORIZED);
+      return next(new AuthError(HttpResponseMessage.UNAUTHORIZED));
     }
 
     const matched = await bcrypt.compare(password, user.password);
     if(!matched){
-      throw new AuthError(HttpResponseMessage.UNAUTHORIZED);
+      return next(new AuthError(HttpResponseMessage.UNAUTHORIZED));
     }
 
-    const token = jwt.sign({id: user._id}, NODE_ENV === 'production' ? JWT_SECRET : 'secreto', {expiresIn: '7d'});
-    res.status(HttpStatus.OK).send({token});
+    const token = jwt.sign({_id: user._id}, NODE_ENV === 'production' ? JWT_SECRET : 'secreto', {expiresIn: '7d'});
+    res.status(HttpStatus.OK).json({token, data: {name: user.name, email: user.email, avatar: user.avatar, _id: user._id }});
 
   }catch(e){
     next(e);
@@ -104,5 +129,5 @@ const login = async (req, res, next) => {
 }
 
 module.exports = {
-  getUser, updateUser, createUser, login
+  getUser, updateUser, createUser, login, getUserById
 }

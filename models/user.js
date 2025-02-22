@@ -27,7 +27,18 @@ const userSchema = new mongoose.Schema({
     required: true,
     minLength: 5,
     select: false
-  }
+  },
+  avatar: {
+    type: String,
+    required: true,
+    validate: {
+      validator(v) {
+        return /^(https?:\/\/)([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(:\d+)?(\/[^\s]*)?$/.test(v);
+      },
+      message: (props) => `${props.value} Invalid avatar URL`,
+    },
+    default: 'https://cdn.iconscout.com/icon/free/png-256/free-avatar-370-456322.png',
+  },
 });
 
 userSchema.statics.findUserByCredentials = async function(email,password){
