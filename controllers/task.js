@@ -17,7 +17,7 @@ const getTasks = async (req, res, next) => {
         return {
           ...task._doc,
           createdAt: moment(task.createdAt).format('YYYY-MM-DD'),
-          updatedAt: moment(task.updatedAt).format('YYYY-MM-DD')
+          endDate: moment(task.endDate).format('YYYY-MM-DD')
         }
       });
       res.status(HttpStatus.OK).json({data: formatedTask});

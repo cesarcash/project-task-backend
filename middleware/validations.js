@@ -34,7 +34,7 @@ const validateLoginUser = celebrate({
 const validateCreateTask = celebrate({
   body: Joi.object().keys({
     title: Joi.string().required().min(2).max(30),
-    description: Joi.string().required().min(2).max(30),
+    description: Joi.string().required().min(2).max(100),
     endDate: Joi.string().required().custom(validateDate),
   })
 });
