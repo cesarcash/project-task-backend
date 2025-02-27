@@ -48,7 +48,7 @@ const createTask = async (req, res, next) => {
 
 }
 
-const updateTask = async (req, res, next) => {
+const updateTaskStatus = async (req, res, next) => {
 
   const taskId = req.params.taskId;
   const {status} = req.body;
@@ -87,4 +87,4 @@ const deleteTask = async (req, res, next) => {
 
 }
 
-module.exports = { getTasks, createTask, updateTask, deleteTask };
+module.exports = { getTasks, createTask, updateTaskStatus, deleteTask };

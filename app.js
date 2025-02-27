@@ -20,8 +20,8 @@ const DEFAULT_ALLOWED_METHODS = ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'
 const {PORT = 3000} = process.env;
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/task-manager')
-// mongoose.connect('mongodb+srv://cesarcash5:cesarcash123@cluster0.tk29m.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+// mongoose.connect('mongodb://localhost:27017/task-manager')
+mongoose.connect('mongodb+srv://cesarcash5:cesarcash123@cluster0.tk29m.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 .then(() => {
   console.log('Connected to MongoDB');
 }).catch((e) => {
