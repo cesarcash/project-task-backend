@@ -8,6 +8,13 @@ const validateDate = (value, helpers) => {
   return helpers.message('Invalid date format');
 }
 
+const validateURL = (value, helpers) => {
+  if (validator.isURL(value, { require_protocol: true })) {
+    return value;
+  }
+  return helpers.error('string.uri');
+};
+
 const validateCreateUser = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
@@ -19,8 +26,8 @@ const validateCreateUser = celebrate({
 const validateUpdateUser = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    email: Joi.string().email().required(),
-    password: Joi.string().required().min(5),
+    avatar: Joi.string().required().custom(validateURL),
+    password: Joi.string().min(5).optional(),
   })
 });
 

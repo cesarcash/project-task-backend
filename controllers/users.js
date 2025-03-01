@@ -56,12 +56,12 @@ const updateUser = async (req, res, next) => {
   try{
 
     const userId = req.user._id;
-    const {name, email, password} = req.body;
-    if(!name || !email){
+    const {name, avatar, password} = req.body;
+    if(!name || !avatar){
       return next(new BadRequestError(HttpResponseMessage.BAD_REQUEST));
     }
 
-    const updateData = {name, email};
+    const updateData = {name, avatar};
 
     if(password){
       updateData.password = await bcrypt.hash(password, 10);
