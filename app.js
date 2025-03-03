@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const {errors} = require('celebrate');
+const cors = require('cors');
 const usersRouter = require('./routes/users');
 const taskRouter = require('./routes/task');
 const quotesRouter = require('./routes/quote');
-const cors = require('cors');
 const {login, createUser} = require('./controllers/users');
 const auth = require('./middleware/auth');
 const {validateCreateUser, validateLoginUser} = require('./middleware/validations');
@@ -32,7 +32,7 @@ mongoose.connect('mongodb://localhost:27017/task-manager')
 app.use(express.json());
 app.use(cors());
 app.options('*',cors());
-app.use(requestLogger);
+app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   const { origin } = req.headers;
@@ -52,6 +52,8 @@ app.use((req, res, next) => {
 
   next();
 });
+
+app.use(requestLogger);
 
 app.post('/signin', validateLoginUser, login);
 app.post('/signup', validateCreateUser, createUser);
