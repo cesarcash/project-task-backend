@@ -1,3 +1,4 @@
+const moment = require('moment');
 const Task = require('../models/task');
 const { HttpStatus, HttpResponseMessage } = require('../enums/http');
 const AuthError = require('../middleware/errors/AuthError');
@@ -12,7 +13,14 @@ const getTasks = async (req, res, next) => {
 
     try{
       const tasks = await Task.find({ owner: req.user._id }).populate('owner');
-      res.status(HttpStatus.OK).json({data: tasks});
+      const formatedTask = tasks.map(task => {
+        return {
+          ...task._doc,
+          createdAt: moment(task.createdAt).format('YYYY-MM-DD'),
+          endDate: moment(task.endDate).format('YYYY-MM-DD')
+        }
+      });
+      res.status(HttpStatus.OK).json({data: formatedTask});
     }catch(e){
       next(e);
     }
@@ -40,7 +48,7 @@ const createTask = async (req, res, next) => {
 
 }
 
-const updateTask = async (req, res, next) => {
+const updateTaskStatus = async (req, res, next) => {
 
   const taskId = req.params.taskId;
   const {status} = req.body;
@@ -79,4 +87,4 @@ const deleteTask = async (req, res, next) => {
 
 }
 
-module.exports = { getTasks, createTask, updateTask, deleteTask };
+module.exports = { getTasks, createTask, updateTaskStatus, deleteTask };

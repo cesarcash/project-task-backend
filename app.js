@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const {errors} = require('celebrate');
 const usersRouter = require('./routes/users');
 const taskRouter = require('./routes/task');
+const quotesRouter = require('./routes/quote');
 const cors = require('cors');
 const {login, createUser} = require('./controllers/users');
 const auth = require('./middleware/auth');
@@ -59,6 +60,7 @@ app.use(auth);
 
 app.use('/users', usersRouter);
 app.use('/tasks', taskRouter);
+app.use('/quotes', quotesRouter)
 
 app.use(errorLogger);
 app.use(errors());
