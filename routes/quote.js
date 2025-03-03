@@ -1,6 +1,7 @@
 const router = require('express').Router();
-const { addQuote } = require('../controllers/quotes');
+const { addQuote, getQuotes } = require('../controllers/quotes');
 
 router.post('/addQuote', addQuote);
+router.get('/:limit', getQuotes);
 
 module.exports = router;

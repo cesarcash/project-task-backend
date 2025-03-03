@@ -15,7 +15,7 @@ const addQuote = async ( req, res, next ) => {
   try{
 
     const quote = await Quote.create({ author, content, tags, owner });
-    res.status(HttpStatus.CREATED).json({data: { ...quote }});
+    res.status(HttpStatus.CREATED).json({data: { _id: quote._id, author: quote.author, content: quote.content  }});
 
   }catch(e){
     next(e);
@@ -23,6 +23,25 @@ const addQuote = async ( req, res, next ) => {
 
 }
 
+const getQuotes = async (req, res, next) => {
+
+  const limit = parseInt(req.params.limit);
+  const page = parseInt(req.query.page) || 1;
+
+  if(!req.user){
+    return next(new AuthError(HttpResponseMessage.UNAUTHORIZED));
+  }
+
+  try{
+    const quotes = await Quote.find({ owner: req.user._id }).skip((page - 1) * limit).limit(limit).populate('owner');
+    const total = await Quote.countDocuments({owner: req.user._id});
+    res.status(HttpStatus.OK).json({ total, data: quotes });
+  }catch(e){
+    next(e);
+  }
+
+}
+
 module.exports = {
-  addQuote
+  addQuote, getQuotes
 }
