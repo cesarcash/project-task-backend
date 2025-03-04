@@ -12,9 +12,9 @@ const HttpResponseMessage = Object.freeze({
   SUCCESS: 'Success',
   CREATED: 'Resource created successfully',
   BAD_REQUEST: 'Bad request',
-  UNAUTHORIZED: 'Unauthorized access',
+  UNAUTHORIZED: 'Credenciales inválidas',
   FORBIDDEN: 'Access forbidden',
-  NOT_FOUND: 'Resource not found',
+  NOT_FOUND: 'Recurso no encontrado',
   SERVER_ERROR: 'Internal server error',
 });
 
