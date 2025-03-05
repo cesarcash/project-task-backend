@@ -106,17 +106,17 @@ const login = async (req, res, next) => {
 
     const {email, password} = req.body;
     if(!email || !password){
-      return next(new BadRequestError(HttpResponseMessage.BAD_REQUEST));
+      return next(new BadRequestError("El email y la contraseña son obligatorios."));
     }
 
     const user = await User.findOne({email}).select('+password');
     if(!user){
-      return next(new AuthError(HttpResponseMessage.UNAUTHORIZED));
+      return next(new AuthError("Correo electrónico o contraseña incorrectos."));
     }
 
     const matched = await bcrypt.compare(password, user.password);
     if(!matched){
-      return next(new AuthError(HttpResponseMessage.UNAUTHORIZED));
+      return next(new AuthError("Correo electrónico o contraseña incorrectos."));
     }
 
     const token = jwt.sign({_id: user._id}, NODE_ENV === 'production' ? JWT_SECRET : 'secreto', {expiresIn: '7d'});

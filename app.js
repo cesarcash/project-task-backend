@@ -69,7 +69,9 @@ app.use(errors());
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
-  res.status(statusCode).send({
+  res.status(statusCode).json({
+    status: 'error',
+    statusCode,
     message: statusCode === 500 ? HttpResponseMessage.SERVER_ERROR : message,
   });
 });
